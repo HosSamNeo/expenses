@@ -2,13 +2,14 @@ import React , {useContext} from "react";
 import { expensesContext } from "../context/Store";
 
 const Balance = () => {
-  let {expensesBalance} = useContext(expensesContext);
-  
+  let {transactions} = useContext(expensesContext);
+  const amounts  = transactions.map(transaction => transaction.amount);
+  const total = amounts.reduce((acc,item) => (acc += item) , 0).toFixed(2);
   return (
 
     <>
         <h4>Your Balance</h4>
-        <h1>${expensesBalance.toFixed(2)}</h1>
+        <h1>${total}</h1>
     </>
   )
 }

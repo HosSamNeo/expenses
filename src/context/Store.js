@@ -1,63 +1,57 @@
-import { createContext , useReducer, useState  , useEffect} from 'react';
-export const expensesContext = createContext([]);
+import React , { createContext , useReducer} from "react";
 
-
-function reducer(expenses,action){
+const AppReducer = (state,action) => {
     switch (action.type) {
         case 'delete':
-            return expenses.filter((item) => item.id !== action.payload.id)
-        case 'addTrans':
-            return [...expenses , action.payload.newTransaction];
-      default:
-        return expenses;
+            return {...state,
+                transactions: state.transactions.filter((trans) => trans.id !== action.payload.id)
+            }
+        case 'add':
+            return {
+                ...state,
+                transactions:[action.payload.transaction , ...state.transactions]
+            }
+        default:
+            return state;
     }
-  }
+
+}
+
+const initialState = {
+    transactions :[]
+}
+
+useEffect(() => {
+ initialState = localStorage.getItem('initialState');
+}, [])
+
+
+
+
+export const expensesContext = createContext(initialState);
+
+
 
 
 
 export default function ExpensesContextProvider({children}){
-    const initialState = [
-        {name:'hassan',moneyAmount:1 , id: 0},
-        {name:'hossam',moneyAmount:2 , id: 1},
-        {name:'ashraf',moneyAmount:3 , id: 2},
-        {name:'ashraf',moneyAmount:-5 , id: 3},
-    ]
+    const [state,dispatch] = useReducer(AppReducer,initialState);
 
-
-    const [expenses,dispatch] = useReducer(reducer,initialState);
-    const [expensesBalance , setExpensesBalance] = useState(0);
-    const [incomeBalance , setIncomeBalance] = useState(0);
-    const [expenseBalance , setExpenseBalance] = useState(0);
-
-
-    
-
-    useEffect(() => {
-        let newExpensesBalance = 0;
-        let newIncomeBalance = 0;
-        let newExpenseBalance=0;
-        for(let i = 0; i < expenses.length; i++) {
-            newExpensesBalance += expenses[i].moneyAmount;
-            if(expenses[i].amount > 0) {
-                newIncomeBalance += expenses[i].moneyAmount;
-            }else {
-                newExpenseBalance += expenses[i].moneyAmount;
-            }
-        }
-        setExpenseBalance(newExpenseBalance)
-        setExpensesBalance(newExpensesBalance)
-        setIncomeBalance(newIncomeBalance)
-    
-    }, [expenses])
-    
     const deleteTransaction = (id) => {
-        dispatch({type:'delete',payload:{id:id}})
+        dispatch({type:'delete' , payload : {id}})
     }
 
-  
+    const addTransaction = (transaction) => {
+        dispatch({type:'add' , payload : {transaction}})
+    }
 
 
-    return  <expensesContext.Provider value={{dispatch,expenses,deleteTransaction,expensesBalance,incomeBalance,expenseBalance}}>
+
+    return  <expensesContext.Provider value={{
+        transactions : state.transactions,
+        deleteTransaction,
+        addTransaction,
+    }}>
             {children}
         </expensesContext.Provider>
 }

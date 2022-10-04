@@ -3,34 +3,39 @@ import { expensesContext } from '../context/Store';
 
 
 const Transaction = () => {
-  let {expenses,dispatch} = useContext(expensesContext);
+  const {addTransaction} = useContext(expensesContext);
+  const [name , setName] = useState('');
+  const [amount , setAmount] = useState(0);
   const handleSubmit = (e) => {
-      e.preventDefault();
-      dispatch({type:'addTrans' , payload : {newTrans : newTrans}})
+    e.preventDefault();
+    const newTransaction = {
+      name,
+      amount:+amount,
+      id : Math.floor(Math.random() * 100000)
+    }
+
+    addTransaction(newTransaction);
+    setName('');
+    setAmount('');
   }
-  const [newTrans , setNewTrans] = useState({name:null,amount:null,id:expenses.length});
-  const setTransActions = (e) => {
-    let newState = {...newTrans}
-    newState[e.target.name] = e.target.value;
-    setNewTrans(newState);
-  }
-  console.log(newTrans);
+
+
   return (
     <>
         <h3>Add new transaction</h3>
         <form onSubmit={handleSubmit}>
             <div className="form-control">
             <label htmlFor="name" >name</label>
-            <input onChange={(e) => setTransActions(e)} name='name' type="text" placeholder="Enter Transaction name..." />
+            <input value={name} onChange={e => setName(e.target.value)} name='name' type="text" placeholder="Enter Transaction name..." />
             </div>
             <div className="form-control">
             <label htmlFor="amount">Amount <br />(negative - expense, positive - income)</label>
-            <input onChange={(e) => setTransActions(e)} name='amount' type="number" placeholder="Enter amount..." />
+            <input value={amount} onChange={e => setAmount(e.target.value)} name='amount' type="number" placeholder="Enter amount..." />
             </div>
-            <button onClick={() => setTransActions} className="btn">Add transaction</button>
+            <button className="btn">Add transaction</button>
         </form>
     </>
   )
 }
 
-export default Transaction
+export default Transaction;

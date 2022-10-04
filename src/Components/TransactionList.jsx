@@ -1,14 +1,18 @@
 import React, {useContext} from 'react';
 import { expensesContext } from '../context/Store';
+
+
 const TransactionList = () => {
-    let {expenses , deleteTransaction} = useContext(expensesContext);
+    let {transactions , deleteTransaction} = useContext(expensesContext);
+    
     return (
         <>
             <h3>History</h3>
             <ul className="list">
-                {expenses.length > 0 ? expenses.map((expense,index) => (
-                    <li key={index} className={expense[index].moneyAmount > 0 ? 'plus' : 'minus'}>
-                        {expense.name} <span>${expense.moneyAmount}</span><button onClick={() => deleteTransaction(expense.id)} className="delete-btn">x</button>
+                
+                {transactions.length > 0 ? transactions.map((transaction,index) => (
+                    <li key={index} className={transaction.amount > 0 ? 'plus' : 'minus'}>
+                        {transaction.name} <span>${transaction.amount}</span><button onClick={() => deleteTransaction(transaction.id)} className="delete-btn">x</button>
                     </li> 
                 )) : ''}
             </ul>

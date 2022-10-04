@@ -10,7 +10,7 @@ root.render(
   <React.StrictMode>
     <ExpensesContextProvider>
       <App />
-      </ExpensesContextProvider>
+    </ExpensesContextProvider>
   </React.StrictMode>
 );
 
