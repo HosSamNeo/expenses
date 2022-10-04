@@ -1,7 +1,11 @@
-import React , { createContext , useReducer} from "react";
+import React , { createContext , useReducer } from "react";
+
+let initialState = {
+    transactions :[]
+}
 
 const AppReducer = (state,action) => {
-    switch (action.type) {
+    switch (action.type) {    
         case 'delete':
             return {...state,
                 transactions: state.transactions.filter((trans) => trans.id !== action.payload.id)
@@ -14,27 +18,13 @@ const AppReducer = (state,action) => {
         default:
             return state;
     }
-
 }
-
-const initialState = {
-    transactions :[]
-}
-
-useEffect(() => {
- initialState = localStorage.getItem('initialState');
-}, [])
-
-
-
 
 export const expensesContext = createContext(initialState);
 
 
-
-
-
 export default function ExpensesContextProvider({children}){
+
     const [state,dispatch] = useReducer(AppReducer,initialState);
 
     const deleteTransaction = (id) => {
@@ -44,8 +34,6 @@ export default function ExpensesContextProvider({children}){
     const addTransaction = (transaction) => {
         dispatch({type:'add' , payload : {transaction}})
     }
-
-
 
     return  <expensesContext.Provider value={{
         transactions : state.transactions,
